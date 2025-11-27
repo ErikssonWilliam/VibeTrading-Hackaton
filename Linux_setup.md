@@ -75,9 +75,3 @@ Your terminal prompt should now show (venv) at the beginning
 ```bash
 pip install -r requirements.txt
 ```
-
-### Step 3: Run the game
-
-```bash
-python strategies/"bot_name"/"bot_name.py"
-```
