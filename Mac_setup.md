@@ -44,3 +44,31 @@ brew install git
    code --version
    ```
   You shall now see a version number.
+
+  ## Running the Game (macOS)
+
+### Step 1: Fork and Clone the Repository
+
+1. Go to the hackathon: [https://github.com/ErikssonWilliam/VibeTrading-Hackaton](https://github.com/ErikssonWilliam/VibeTrading-Hackaton)
+2. Click the "Fork" button in the top-right corner to create your own copy
+3. Open **Terminal** (press `Cmd + Space`, type "Terminal", press Enter)
+4. Clone your forked repository (replace `YourUsername` with your actual GitHub username):
+```bash
+git clone https://github.com/YourUsername/VibeTrading-Hackaton.git
+cd VibeTrading-Hackaton
+```
+
+### Step 2: Set up a Python Virtual Environment
+
+1. Create the environment:
+```bash
+python3 -m venv .venv
+```
+2. Activate the environment:
+```bash
+source .venv/bin/activate
+```
+3. Install required Python packages:
+```bash
+pip install -r requirements.txt
+```
