@@ -75,3 +75,5 @@ Your terminal prompt should now show (venv) at the beginning
 ```bash
 pip install -r requirements.txt
 ```
+
+Return to main page: [Go back to Main README](../README.md)

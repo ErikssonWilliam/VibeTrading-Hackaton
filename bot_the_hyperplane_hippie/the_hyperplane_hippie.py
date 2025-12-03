@@ -1,15 +1,17 @@
+# =========================================================================
+# Start of file. Do not edit this section.
+# MLP STRATEGY IMPLEMENTATION
+# =========================================================================
+
 import pandas as pd
 import numpy as np
 import joblib
-import matplotlib.pyplot as plt
 from sklearn.neural_network import MLPRegressor 
 from sklearn.preprocessing import StandardScaler
-from sklearn.model_selection import train_test_split
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 CURRENT_STRATEGY_PATH = os.path.abspath(__file__)
-
 
 try:
     from backtest_engine import run_single_stock_analysis
@@ -17,8 +19,16 @@ try:
 except ImportError:
     print("FATAL ERROR: Could not import backtest_engine.py. Check your directory structure.")
     exit()
-# ------------------------------------------------------------------
 
+
+df = load_training_data()
+if df.empty:
+    print("Cannot proceed without data. Exiting.")
+    exit()
+
+# =========================================================================
+# MODIFY FROM THIS POINT DOWNWARDS
+# =========================================================================
 # --- CONFIGURATION (Participants can adjust these) ---
 FAST_WINDOW = 20
 SLOW_WINDOW = 50
@@ -27,18 +37,7 @@ SUBMISSION_NAME = 'my_team_name_mlp_submission.joblib'
 INITIAL_CAPITAL = 10000.0 
 # ---------------------------------------------------
 
-# 1. LOAD TRAINING DATA
-df = load_training_data()
-if df.empty:
-    print("Cannot proceed without data. Exiting.")
-    exit()
-
-# =========================================================================
-# SECTION A: FEATURE ENGINEERING AND TARGET DEFINITION
-# =========================================================================
-print("\n--- 1. FEATURE ENGINEERING ---")
-
-# CURRENT SIMPLE FEATURES (Trend Following)
+# TODO: Add new features as needed
 df['SMA_Fast'] = df.groupby(level='Ticker')['Close'].transform(lambda x: x.rolling(window=FAST_WINDOW).mean())
 df['SMA_Slow'] = df.groupby(level='Ticker')['Close'].transform(lambda x: x.rolling(window=SLOW_WINDOW).mean())
 df['MA_Difference'] = df['SMA_Fast'] - df['SMA_Slow']
@@ -63,9 +62,7 @@ y_train = y.iloc[:train_size]
 df_local_test = df.iloc[train_size:].copy() 
 team_name = SUBMISSION_NAME.split('_submission')[0]
 
-# =========================================================================
-# SECTION B: TRAIN REGRESSION MODEL (LEVER 3: Tune the model)
-# =========================================================================
+#TODO: Tune the model hyperparameters as needed
 print(f"\n--- 2. MODEL TRAINING ({len(X_train_scaled)} samples) ---")
 
 # Participants should adjust hidden_layer_sizes, max_iter, or activation
@@ -76,11 +73,10 @@ model = MLPRegressor(
 ).fit(X_train_scaled, y_train)
 
 # =========================================================================
-# SECTION C: EXECUTION DO NOT EDIT THIS (FIXED - Uses the Backtest Engine)
+# DO NOT EDIT FROM THIS POINT DOWNWARDS
 # =========================================================================
 
-# 3. RUN INDIVIDUAL STOCK ANALYSIS
-print("\n--- 3. Running Individual Stock Timing Analysis ---")
+print("\n--- Running Individual Stock Timing Analysis ---")
 
 X_test_scaled = scaler.transform(df_local_test[FEATURE_COLS])
 df_local_test['Predicted_Return'] = model.predict(X_test_scaled)

@@ -143,4 +143,6 @@ Good luck and happy trading! 🚀
 
 ---
 
+[Go back to Main README](../README.md)
+
 *Created by LiU AI Society*

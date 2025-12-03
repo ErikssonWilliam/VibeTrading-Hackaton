@@ -1,13 +1,16 @@
+# =========================================================================
+# DO NOT EDIT FROM THIS POINT DOWNWARDS
+# =========================================================================
+
 import pandas as pd
 import numpy as np
 import joblib
 
-# --- FIX FOR DIRECT EXECUTION ---
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 CURRENT_STRATEGY_PATH = os.path.abspath(__file__)
-# -------------------------------
+
 
 try:
     from backtest_engine import run_single_stock_analysis
@@ -15,25 +18,7 @@ try:
 except ImportError:
     print("FATAL ERROR: Could not import backtest_engine.py. Check your directory structure.")
     exit()
-# ------------------------------------------------------------------
 
-# =========================================================================
-# CONFIGURATION SECTION - ADJUST THESE PARAMETERS
-# =========================================================================
-
-# Team and submission settings
-TEAM_NAME = "my_team_name"
-SUBMISSION_NAME = f'{TEAM_NAME}_submission.joblib'
-INITIAL_CAPITAL = 10000.0
-
-# Trading strategy parameters
-FAST_WINDOW = 20
-SLOW_WINDOW = 50
-N_DAYS_PREDICT = 2
-
-# =========================================================================
-# DATA LOADING AND PREPARATION
-# =========================================================================
 
 print("\n--- LOADING TRAINING DATA ---")
 df = load_training_data()
@@ -42,12 +27,19 @@ if df.empty:
     exit()
 
 # =========================================================================
-# FEATURE ENGINEERING SECTION - ADD YOUR FEATURES HERE
+# EDIT FROM THIS POINT DOWNWARDS
 # =========================================================================
 
-print("\n--- FEATURE ENGINEERING ---")
+# --- CONFIGURATION (Participants can adjust these) ---
+TEAM_NAME = "my_team_name"
+SUBMISSION_NAME = f'{TEAM_NAME}_submission.joblib'
+INITIAL_CAPITAL = 10000.0
+FAST_WINDOW = 20
+SLOW_WINDOW = 50
+N_DAYS_PREDICT = 2
+# ---------------------------------------------------
 
-# Add your custom features here
+# TODO: Implement additional features as needed
 df['SMA_Fast'] = df.groupby(level='Ticker')['Close'].transform(
     lambda x: x.rolling(window=FAST_WINDOW).mean()
 )
@@ -56,20 +48,15 @@ df['SMA_Slow'] = df.groupby(level='Ticker')['Close'].transform(
 )
 df['MA_Difference'] = df['SMA_Fast'] - df['SMA_Slow']
 
-# =========================================================================
-# TARGET VARIABLE DEFINITION
-# =========================================================================
 
+# TARGET VARIABLE DEFINITION
 df['Future_Return'] = df.groupby(level='Ticker')['Close'].transform(
     lambda x: x.pct_change(N_DAYS_PREDICT).shift(-N_DAYS_PREDICT)
 )
 
 df.dropna(inplace=True)
 
-# =========================================================================
-# FEATURE SELECTION - UPDATE THIS LIST WITH YOUR FEATURES
-# =========================================================================
-
+# TODO: FEATURE SELECTION - UPDATE THIS LIST WITH YOUR FEATURES
 FEATURE_COLS = ['MA_Difference']
 
 # =========================================================================
@@ -98,9 +85,7 @@ X_test_scaled = scaler.transform(X_test)
 from sklearn.linear_model import LinearRegression
 model = LinearRegression().fit(X_train_scaled, y_train)
 
-# =========================================================================
 # TRADING SIGNAL GENERATION
-# =========================================================================
 
 print("\n--- GENERATING TRADING SIGNALS ---")
 
@@ -110,7 +95,7 @@ df_local_test['Predicted_Return'] = predictions
 df_local_test['Signal'] = np.where(df_local_test['Predicted_Return'] > 0, 1, 0)
 
 # =========================================================================
-# BACKTESTING EXECUTION (DO NOT MODIFY)
+# DO NOT EDIT FROM THIS POINT DOWNWARDS
 # =========================================================================
 
 print("\n--- RUNNING BACKTEST ---")
@@ -132,4 +117,4 @@ for ticker in TICKERS_IN_TEST:
 # =========================================================================
 
 joblib.dump(model, SUBMISSION_NAME)
-print(f"\n✅ SUBMISSION READY: Model saved as {SUBMISSION_NAME}")
+print(f"\n SUBMISSION READY: Model saved as {SUBMISSION_NAME}")
