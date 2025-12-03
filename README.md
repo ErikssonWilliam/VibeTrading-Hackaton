@@ -26,13 +26,13 @@ The winner will be the team that creates the most profitable bot that successful
 
 ## 📂 Project Structure
 
-The project is modular. **Your primary workspace is the `strategies/` folder.**
+The project is modular. 
 
 | Folder / File | Purpose | Shall be edited? |
 | :--- | :--- | :--- |
 | `backtest_engine.py` | The fixed simulation environment, metrics, and plotting logic. | **NO** |
 | `data/load_data.py` | Loads the historical stock data used for training and testing. | **NO** |
-| `strategies/` | **Your primary workspace.** Contains the starting templates for each bot. | **YES** |
+| `"bot_name/` | **Your primary workspace.** Contains the starting templates for each bot. | **YES** |
 | `strategies/<bot_name>/` | Dedicated folders for each strategy, including output plots. | **YES** |
 | `README.md` | This guide. | **NO** |
 
@@ -43,7 +43,7 @@ Note that if any participants modify the files which shall not be edited, no com
 ---
 ## 🐍 The 5 Starter Bots (The VibeTrading Team)
 
-You have five pre-built $\text{ML}$ bots, each using a distinct core algorithm to capture the market's "vibe."
+You have five pre-built Machine Learning bots, each using a distinct core algorithm to beat the market.
 
 | Bot Name | Technique | Approach | Key $\text{sklearn}$ Model |
 | :--- | :--- | :--- | :--- |
