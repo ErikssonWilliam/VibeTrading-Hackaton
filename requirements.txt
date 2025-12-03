@@ -1,6 +1,7 @@
 pandas
 numpy
 yfinance
+pandas-datareader
 scikit-learn
 joblib
 matplotlib

@@ -15,6 +15,7 @@ CURRENT_STRATEGY_PATH = os.path.abspath(__file__)
 
 try:
     # Modules are now imported directly from the root/data folder due to the path fix
+    from technical_indicators import macd, rsi  # pyright: ignore[reportMissingImports]
     from backtest_engine import run_single_stock_analysis
     from data.load_data import load_training_data 
 except ImportError as e:
@@ -44,9 +45,18 @@ if df.empty:
 print("\n--- 1. FEATURE ENGINEERING ---")
 
 # CURRENT SIMPLE FEATURES 
+#df['SMA_Fast'] = df.groupby(level='Ticker')['Close'].transform(lambda x: x.rolling(window=FAST_WINDOW).mean())
+#df['SMA_Slow'] = df.groupby(level='Ticker')['Close'].transform(lambda x: x.rolling(window=SLOW_WINDOW).mean())
+#df['MA_Difference'] = df['SMA_Fast'] - df['SMA_Slow']
+
 df['SMA_Fast'] = df.groupby(level='Ticker')['Close'].transform(lambda x: x.rolling(window=FAST_WINDOW).mean())
 df['SMA_Slow'] = df.groupby(level='Ticker')['Close'].transform(lambda x: x.rolling(window=SLOW_WINDOW).mean())
 df['MA_Difference'] = df['SMA_Fast'] - df['SMA_Slow']
+
+df['RSI'] = rsi(df['Close'], period=14)
+df['MACD'], df['MACD_Signal'], df['MACD_Histogram'] = macd(df['Close'], fast=12, slow=26, signal=9)
+
+
 
 # Create the Target Variable: CONVERT TO BINARY CLASSIFICATION LABEL
 # Y = 1 (Up) if the future return is positive, 0 (Down/Flat) otherwise.
@@ -58,7 +68,7 @@ df.dropna(inplace=True)
 # =========================================================================
 # FEATURE SELECTION - UPDATE THIS LIST WITH YOUR FEATURES
 # =========================================================================
-FEATURE_COLS = ['MA_Difference'] 
+FEATURE_COLS = ['MA_Difference', 'RSI', 'MACD', 'MACD_Signal', 'MACD_Histogram'] 
 X = df[FEATURE_COLS]
 # Note: Future return is a binary target column for classification
 y = df['Future_Return_Class'] 
